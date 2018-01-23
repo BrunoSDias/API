@@ -1,16 +1,25 @@
 var db = require('../../config/db');
 
-var Usuario = function(){
-	this.id = 0;
-	this.nome = '';
-	this.login = '';
-	this.senha = '';
-	this.email = '';
+var Usuario = function(usuario){
+	if (usuario != undefined){
+		this.id = usuario.id;
+		this.nome = usuario.nome;
+		this.login = usuario.login;
+		this.senha = usuario.senha ;
+		this.email = usuario.email;
+	}
+	else
+	{
+		this.id = 0;
+		this.nome = '';
+		this.login = '';
+		this.senha = '';
+		this.email = '';
+	}
+	
 
-	this.salvar = function(){
-		if (this.id == 0 || this.id == '' || this.id == undefined){
-			
-			if(this.nome == ''){
+	this.salvar = function(callback){
+		if(this.nome == ''){
 				console.log('[Modelo:Usuario] Nome de usuario obrigatório');
 				return;
 			}
@@ -22,26 +31,116 @@ var Usuario = function(){
 				console.log('[Modelo:Usuario] Nome de senha obrigatório');
 				return;
 			}			
-
-			var query = "INSERT INTO `cms`.`usuarios` (`nome`, `login`, `senha`, `email`) VALUES " +
+			var query = '';
+		if (this.id == 0 || this.id == '' || this.id == undefined){
+			query = "INSERT INTO usuarios (nome, login, senha, email) VALUES " +
 			" ('"+this.nome+"', '"+this.login+"', '"+this.senha+"', '"+this.email+"')";
 
 			db.cnn.exec(query, function(rows, err){
-				if (err != undefined){
-					console.log('Erro ao incluir dados de Usuario');
+				if (err != undefined || err != null){
+					callback({erro:true, mensagem: err});
 				}
 				else
 				{
-					console.log('Usuário incluido com sucesso');
+					callback({erro:false});
 				}
 			});
 		}
-		else
-			//atualizar na base de dados
-		{
+		else{
+			query = "UPDATE usuarios SET nome='"+this.nome+"', login='"+this.login+"', senha='"+this.senha+"', email='"+this.email+
+		"' WHERE id='"+this.id+"';";
 
+			db.cnn.exec(query, function(rows, err){
+				if (err != undefined || err != null){
+					callback({erro:true, mensagem: err});
+				}
+				else
+				{
+					callback({erro:false});
+				}
+			});		
 		}
 	};
+};
+
+Usuario.excluirTodos = function(callback){
+	query = "Delete from usuarios";
+
+	db.cnn.exec(query, function(rows, err){
+		if (err != undefined || err != null){
+			callback({erro:true, mensagem: err});
+		}
+		else
+		{
+			callback({erro:false});
+		}
+	});	
+};
+
+Usuario.truncateTable = function(callback){
+	query = "TRUNCATE usuarios;";
+
+	db.cnn.exec(query, function(rows, err){
+		if (err != undefined || err != null){
+			callback({erro:true, mensagem: err});
+		}
+		else
+		{
+			callback({erro:false});
+		}
+	});	
+};
+
+Usuario.todos = function(callback){
+	query = "select * from usuarios";
+
+	db.cnn.exec(query, function(rows, err){
+		if (err != undefined || err != null){
+			callback({
+				erro:true, 
+				mensagem: err, 
+				usuarios: []
+			});
+		}
+		else
+		{
+			callback({
+				erro:false, 
+				usuarios: rows
+			});
+		}
+	});	
+};
+
+Usuario.buscarPorId  = function(id, callback){
+	query = "select * from usuarios where id='"+ id +"'";
+
+	db.cnn.exec(query, function(rows, err){
+		if (err != undefined || err != null){
+			callback({
+				erro:true, 
+				mensagem: err, 
+				usuario: {}
+			});
+		}
+		else
+		{
+			if (rows.length > 0){
+				callback({
+					erro:false, 
+					usuario: rows[0]
+				});		
+			}
+			else
+			{
+				callback({
+					erro:false, 
+					usuario: {} 
+				});		
+			}
+			
+		}
+	});	
 };
 
 module.exports = Usuario;

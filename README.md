@@ -18,3 +18,10 @@ Caso va a utilzar dessa forma alterar a key "scripts" do arquivo package.json pa
   
 Para executá-lo no CMD basta digitar:  
 	npm run-script jshint  
+
+
+Para executar os testes unitários (TDD - Test Driven Development)  
+	npm run-script test  
+
+REQUIRE  
+A lib 'require' foi utilizada para gerar as requisições aos controllers através dos testes.    
