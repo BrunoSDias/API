@@ -19,7 +19,15 @@ Caso va a utilzar dessa forma alterar a key "scripts" do arquivo package.json pa
 Para executá-lo no CMD basta digitar:  
 	npm run-script jshint  
 
+O framework Jasmine foi utilizado para realizar os testes unitários  
+Instalação do Jasmine:  
+Como dependência do projeto:  
+npm install jasmine --save  
 
+Como variavel global:  
+npm install -g jasmine  
+
+Caso o jasmine esteja como depêndencia, adicionar sua execução junto à key "scripts" no arquivo package.json  
 Para executar os testes unitários (TDD - Test Driven Development)  
 	npm run-script test  
 
