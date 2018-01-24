@@ -80,6 +80,25 @@ describe("O modelo de usuário", function() {
       });      
     });
 
+//---Teste: método excluirPorId
+    it('excluirPorId deve excluir seu usuário por id',function(done){
+       Usuario.truncateTable(function(retorno1){
+        var usuario = new Usuario();
+
+        usuario.nome = 'BrunoTest';
+        usuario.login =  'BrunoLogin';
+        usuario.senha = 'BrunoSenha';
+        usuario.email = 'BrunoEmail@email.com';
+
+        usuario.salvar(function(retorno2){
+          Usuario.excluirPorId(1, function(retorno3){
+            expect(retorno3.erro).toBe(false);            
+            done();
+          });
+        });
+      });      
+    });
+
 //---Teste: método todos
     it('todos precisa retornar todos os registros da tabela',function(done){
        Usuario.excluirTodos(function(retorno1){
@@ -124,5 +143,25 @@ describe("O modelo de usuário", function() {
         });
       });      
     });
+
+//---Teste: método buscaPorNome
+    it('buscarPorNome precisa retornar o  registros da tabela',function(done){
+       Usuario.excluirTodos(function(retorno1){
+        var nome = "bruno";
+        var usuario = new Usuario({nome: 'BrunoTest', login:'BrunoLogin', senha:'BrunoSenha', email:'BrunoEmail@email.com'});
+        usuario.salvar(function(retorno2){
+          var usuario2 = new Usuario({nome:'Robersvaldo', login:'RobersvaldoLogin', senha:'RobersvaldoSenha', email:'RobersvaldoEmail@email.com'});
+          usuario2.salvar(function(retorno3){
+            Usuario.buscarPorNome(nome, function(retorno4){              
+              expect(retorno4.erro).toBe(false);
+              expect(retorno4.usuarios.length).toBe(1);
+              expect(retorno4.usuarios[0].nome).toBe('BrunoTest');
+              done();
+            });
+          });
+        });      
+      });
+    });
+    //-- Termina describe
   });  
 });

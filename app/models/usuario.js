@@ -143,4 +143,55 @@ Usuario.buscarPorId  = function(id, callback){
 	});	
 };
 
+Usuario.excluirPorId  = function(id, callback){
+	query = "delete from usuarios where id='"+ id +"'";
+
+	db.cnn.exec(query, function(rows, err){
+		if (err != undefined && err != null){
+			callback({
+				erro:true, 
+				mensagem: err, 
+			});
+		}
+		else
+		{
+			callback({
+				erro:false 
+			});		
+			
+			
+		}
+	});	
+};
+
+Usuario.buscarPorNome = function(nome, callback){
+	query = "select * from usuarios where nome like'%"+ nome +"%'";
+
+	db.cnn.exec(query, function(rows, err){
+		if (err != undefined || err != null){
+			callback({
+				erro:true, 
+				mensagem: err, 
+				usuarios: []
+			});
+		}
+		else
+		{
+			if (rows.length > 0){
+				callback({
+					erro:false, 
+					usuarios: rows
+				});		
+			}
+			else
+			{
+				callback({
+					erro:false, 
+					usuarios: [] 
+				});		
+			}			
+		}
+	});	
+};
+
 module.exports = Usuario;
