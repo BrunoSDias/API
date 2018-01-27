@@ -1,0 +1,28 @@
+<html>
+<head>
+	<title>Cross Domain</title>
+	<script src='../javascripts/jquery-3.3.1.min.js'></script>
+	<script type="text/javascript">
+		function salvar(){
+			$.ajax({
+			  method: "PATCH",
+			  url: "http://127.0.0.1:3000/usuarios/4.json",
+			  data: { 
+			  	id: 4,
+		  	 	nome:'Test cross Patch',
+	      	login: 'cross',
+	      	senha:'123',
+	      	email:'cross@email.com' 
+			  }
+			})
+		  .done(function( msg ) {
+		    alert('Usuário incluido por Ajax');
+		  });
+		}
+	</script>
+</head>
+<body>
+	<h1>Teste de Cross Domain</h1>
+	<button type='button' onclick='salvar()'>Salvar Usuário</button>
+</body>
+</html>

@@ -91,8 +91,24 @@ describe('o controller de usuário', function(){
 
 //--Teste: POST/ usuarios.json - serviço salvar - usuarios_controller
 	describe('POST/ usuarios.json - deve criar um usuario', function(){
+		var token;
+
+		beforeEach(function(done){
+
+			request.head(host + '/usuarios.json', function(){
+				token = this.response.headers.auth_token;
+				done();
+			});			
+		});
+
 		it('deve retornar o status code de 201 e retornar a mensagem de usuario criado com sucesso', function(done){
-			request.post({url: host + '/usuarios.json', form: {nome:'Joao', login:'joao', senha:'123', email:'joao@email.com'}}, function(error, res, body){
+			request.post(
+			{
+				url: host + '/usuarios.json',
+			 	headers: {'auth_token': token},
+			 	form: {nome:'Joao', login:'joao', senha:'123', email:'joao@email.com'}
+		 	},
+		 	function(error, res, body){
 				if (res === undefined || res == null){
 					console.log('Não conseguiu localizar o servidor');
 					expect(503).toBe(200);
@@ -111,6 +127,7 @@ describe('o controller de usuário', function(){
 //--Teste: PUT/ usuarios.json - serviço salvar com o objetivo de atualizar usuário - usuarios_controller
 	describe('PUT/ usuarios.json - deve atualizar um usuario', function(){
 		var usuarioCadastrado;
+		var token;
 
 		beforeEach(function(done){
 			Usuario.excluirTodos(function(retorno1){
@@ -125,15 +142,19 @@ describe('o controller de usuário', function(){
 						if(!retorno3.erro){
 							usuarioCadastrado = retorno3.usuarios[0];
 						}
-						done();
+						request.head(host + '/usuarios.json', function(){
+							token = this.response.headers.auth_token;
+							done();
+						});						
 					});
-				});
-			});
+				});				
+			});			
 		});
+
 		it('deve retornar o status code de 200 e retornar a mensagem de usuario atualizado com sucesso', function(done){
 			usuarioCadastrado.nome = 'nome de usuario ja atualizado';
 
-			request.put({url: host + '/usuarios.json', form: usuarioCadastrado}, function(error, res, body){
+			request.put({url: host + '/usuarios.json', headers:{'auth_token': token}, form: usuarioCadastrado}, function(error, res, body){
 				if (res === undefined || res == null){
 					console.log('Não conseguiu localizar o servidor');
 					expect(503).toBe(200);
@@ -153,7 +174,7 @@ describe('o controller de usuário', function(){
 		});
 
 		it('deve retornar o status code de 200 e retornar a mensagem de usuario atualizado com sucesso', function(done){
-			request.put({url: host + '/usuarios.json', form: {}}, function(error, res, body){
+			request.put({url: host + '/usuarios.json', headers:{'auth_token': token}, form: {}}, function(error, res, body){
 				if (res == undefined){
 					console.log('Não conseguiu localizar o servidor');
 					expect(503).toBe(200);
@@ -170,6 +191,7 @@ describe('o controller de usuário', function(){
 //--Teste: PATCH/ usuarios/:id.json - serviço salvar com o objetivo de atualizar usuário - usuarios_controller
 	describe('PATCH/ usuarios/:id.json - deve atualizar um usuario', function(){
 		var usuarioCadastrado;
+		var token;
 
 		beforeEach(function(done){
 			Usuario.excluirTodos(function(retorno1){
@@ -184,13 +206,16 @@ describe('o controller de usuário', function(){
 						if(!retorno3.erro){
 							usuarioCadastrado = retorno3.usuarios[0];
 						}
-						done();
+						request.head(host + '/usuarios.json', function(){
+							token = this.response.headers.auth_token;
+							done();
+						});								
 					});
 				});
 			});
 		});
 		it('deve retornar o status code de 200 e retornar a mensagem de usuario atualizado com sucesso', function(done){
-			request.patch({url: host + '/usuarios/' + usuarioCadastrado.id + '.json', form: {nome: 'Nome atualizado por PATCH'}}, function(error, res, body){
+			request.patch({url: host + '/usuarios/' + usuarioCadastrado.id + '.json', headers:{'auth_token': token}, form: {nome: 'Nome atualizado por PATCH'}}, function(error, res, body){
 				if (res === undefined || res == null){
 					console.log('Não conseguiu localizar o servidor');
 					expect(503).toBe(200);
@@ -213,6 +238,7 @@ describe('o controller de usuário', function(){
 //--Teste: DELETE/ usuarios/:id.json - serviço deletar com o objetivo de excluir usuário - usuarios_controller
 	describe('DELETE/ usuarios/:id.json - deve excluir um usuario', function(){
 		var usuarioCadastrado;
+		var token;
 
 		beforeEach(function(done){
 			Usuario.excluirTodos(function(retorno1){
@@ -227,13 +253,16 @@ describe('o controller de usuário', function(){
 						if(!retorno3.erro){
 							usuarioCadastrado = retorno3.usuarios[0];
 						}
-						done();
+						request.head(host + '/usuarios.json', function(){
+							token = this.response.headers.auth_token;
+							done();
+						});							
 					});
 				});
 			});
 		});
 		it('deve retornar o status code de 204', function(done){
-			request.delete({url: host + '/usuarios/' + usuarioCadastrado.id + '.json'}, function(error, res, body){
+			request.delete({url: host + '/usuarios/' + usuarioCadastrado.id + '.json', headers:{'auth_token': token}}, function(error, res, body){
 				if (res === undefined){
 					console.log('Não conseguiu localizar o servidor');
 					expect(503).toBe(200);
